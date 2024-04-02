@@ -44,6 +44,7 @@ public class ItemReaderStep implements Tasklet {
 
         String[] actualLine;
 
+        // leer archivo fila a fila y agrregarlo a personList
         while((actualLine = csvReader.readNext()) != null) {
             Person person = new Person();
             person.setName(actualLine[0]);
@@ -57,6 +58,13 @@ public class ItemReaderStep implements Tasklet {
         reader.close();
 
         log.info("---> FIN paso lectura <---");
+
+        // enviar listado a contexto del job
+        chunkContext.getStepContext()
+                .getStepExecution()
+                .getJobExecution()
+                .getExecutionContext()
+                .put("personList", personList);
 
         return RepeatStatus.FINISHED;
     }
